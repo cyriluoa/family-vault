@@ -1,0 +1,62 @@
+# Environment files
+.env
+.env.*
+!.env.example
+*.env.local
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.turbo/
+.next/
+dist/
+build/
+coverage/
+
+# Android / Gradle
+.gradle/
+**/build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+key.properties
+*.jks
+*.keystore
+google-services.json
+
+# Kotlin / Java
+*.class
+out/
+
+# Supabase
+.supabase/
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# Cloud credentials
+*service-account*.json
+*credentials*.json
+
+# IDEs and editors
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
