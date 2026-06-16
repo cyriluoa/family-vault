@@ -14,13 +14,16 @@ FamilyVault is a private family document management app. The goal is to replace 
 - Subjects can be people, properties, vehicles, trips, organizations, or family-wide entities.
 - Every vault should start with a default Family subject. Family-wide documents should attach to that subject.
 - Users are app accounts. Subjects are what documents are about.
-- A user may also have a linked person subject.
+- A user's membership in a vault may link to a person subject in that vault.
 - A document has a category, type, status, primary subject, related subjects, tags, metadata, and versions.
 - A saved document must have a primary subject. During an upload draft or import flow, the primary subject can be temporarily missing until metadata is completed.
-- Categories and document types should use a fixed starter taxonomy for the MVP. The model should allow custom document types later, but custom type management is not part of the first version.
+- Categories and document types should start with built-in system document types. Vaults should be able to add custom document types later while inheriting the built-in set.
 - Document status should be simple: active or inactive.
 - Versioning should be simple: each document has one current version and older versions.
 - The system should support latest-version tracking.
+- A renewed real-world document, such as a newly issued passport, can be treated as a new version of the same logical document when the family thinks of it as the same ongoing record.
+- Current document fields such as issued date and expiry date should describe the latest/current version that the family cares about.
+- Different document lifecycles need different date fields: issue/expiry dates for renewable documents, document date for event documents, and period start/end for recurring documents.
 - New-version detection is manual in the MVP. The app may ask whether an uploaded file is a new version of an existing document, but no automatic detection is required initially.
 - Expiry reminders are attached to documents first. Assigned members or responsible people can be added later.
 - Files are stored in cloud storage, not permanently on-device.
@@ -60,6 +63,8 @@ FamilyVault is a private family document management app. The goal is to replace 
 - Web app access.
 - Email-based invites.
 - Custom document type management.
+- Issuing organization as a dedicated document field.
+- Smart file optimization suggestions for large scans/photos when the optimized copy remains usable and saves meaningful storage.
 
 ## Android Share-Sheet Flows
 
@@ -68,3 +73,11 @@ Users should be able to share a PDF, image, or document from apps such as WhatsA
 Users should also be able to share a document from FamilyVault to external apps. FamilyVault may temporarily download or cache the file locally when necessary, then invoke Android's native share sheet. The shared document should be sent as a file attachment, not as a public link.
 
 Public document links are not required for the MVP and should be treated as a future feature.
+
+## Storage Optimization
+
+Original uploaded files should remain the source of truth. Do not silently apply destructive compression to important documents.
+
+A future smart optimization flow can detect when a file is likely worth reducing, such as oversized scanned PDFs or phone photos of paper. If an optimized copy would remain readable and save meaningful space, for example reducing storage to roughly a third of the original, FamilyVault should encourage the user to use the optimized version or keep both.
+
+The app should not encourage optimization for files that are already compressed, files where quality would noticeably suffer, or files where fidelity is legally important unless the user explicitly chooses it.

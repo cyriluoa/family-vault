@@ -31,6 +31,7 @@ A future worker service can handle heavier asynchronous jobs:
 - OCR.
 - AI classification.
 - Metadata extraction.
+- Smart file optimization analysis and derivative generation.
 - Embedding generation.
 - Semantic search indexing.
 - Reminder processing.
@@ -43,6 +44,8 @@ Files are stored in cloud storage, not permanently on-device. Metadata and versi
 Use one private Supabase Storage bucket for documents, with vault-based object paths and storage policies. Separate environments should be handled with separate Supabase projects or environment configuration, not separate document-class buckets.
 
 In the MVP, external sharing should send the actual file attachment, such as a PDF, image, or document. Public document links are a future feature, not an MVP requirement.
+
+Original files should remain the source of truth. Future workers may create optimized derivatives, previews, thumbnails, or suggested compressed copies, but destructive compression should not be automatic in the MVP.
 
 ## Security
 
