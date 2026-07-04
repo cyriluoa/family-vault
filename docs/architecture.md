@@ -24,6 +24,42 @@ A Cloud Run API can hold business logic that should not live in the client. The 
 
 Supabase Edge Functions may be used for lightweight app logic where they are simpler than a full API route.
 
+## Auth Flow
+
+Supabase Auth is the source of truth for FamilyVault accounts. Google sign-in and email sign-in are login methods for the same FamilyVault account, not separate account systems.
+
+When a user signs in with Google for the first time, Supabase creates an `auth.users` row. The database trigger then creates one matching `public.profiles` row. Later sign-ins should reuse the same Supabase user/profile.
+
+If a user signs in with Google using an email address and later uses Continue with email for that same verified email address, the intended behavior is that they land in the same FamilyVault profile. This should be tested early with the real Supabase project to confirm provider linking behaves as expected.
+
+For Android MVP, start with Supabase OAuth plus Android deep links. The Continue with Google button should launch the Google OAuth flow through Supabase, return to the app, and store a Supabase session. Continue with email can use email OTP or magic links, and should end in the same post-login flow.
+
+The MVP Android redirect can use a custom scheme such as `com.familyvault.app://auth-callback` for speed of development. Before wider production release, replace or supplement this with verified Android App Links using an HTTPS domain owned by FamilyVault, such as `https://auth.familyvault.app/callback`, so Android can verify the app owns the callback domain.
+
+### Android Auth Implementation
+
+The Android app uses a shared `SupabaseClient` provided by Hilt. The client installs Auth, PostgREST, and Storage plugins.
+
+Current Android auth flow:
+
+1. `AuthScreen` sends button actions to `AuthViewModel`.
+2. `AuthRepositoryImpl` starts Google OAuth with Supabase Auth.
+3. Supabase opens Google sign-in in a custom tab.
+4. Supabase redirects back to `com.familyvault.app://auth-callback`.
+5. `MainActivity` receives the deep link and calls `supabaseClient.handleDeeplinks(intent)`.
+6. Supabase imports the session and updates `sessionStatus`.
+7. `AppViewModel` observes `sessionStatus` and maps it to app routing state.
+
+The signed-in app shell currently routes users to onboarding until vault membership lookup is implemented. Profile data is split into two concepts:
+
+- `public.profiles`: FamilyVault app profile fields such as display name, email, avatar URL, and default vault preference.
+- Supabase Auth account metadata: auth user id, providers, phone, account creation, last sign-in, and email confirmation.
+Post-login routing:
+
+- If the user has active vault membership, open the default vault.
+- If the user has no vault yet, show onboarding to create or join a vault.
+- If the user came from an invite link or code, accept the invite, create/link their person subject in that vault, and then enter the vault.
+
 ## Worker
 
 A future worker service can handle heavier asynchronous jobs:
@@ -54,3 +90,5 @@ Never trust the client. Authentication, authorization, and vault permissions mus
 Vault members can access documents in their vault by default for the MVP. More restrictive per-document access can be added later without changing the core idea that vault membership is the default permission boundary.
 
 Invite links and codes are the first invite mechanism so families can share access through WhatsApp. Email-based invites can be added later.
+
+Post-MVP security hardening should include verified Android App Links for auth callbacks instead of relying only on custom URL schemes. Custom schemes are convenient for development but are not ownership-verified in the same way as HTTPS App Links.

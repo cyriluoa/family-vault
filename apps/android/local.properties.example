@@ -1,0 +1,10 @@
+# Copy these values into apps/android/local.properties.
+# Android Studio may already keep sdk.dir in local.properties; leave that line in place.
+#
+# These values are environment config. The Supabase publishable/anon key is safe
+# to ship in Android and web clients when Row Level Security is configured, but
+# real local.properties files should stay out of Git.
+
+familyvault.supabase.url=https://YOUR_PROJECT_REF.supabase.co
+familyvault.supabase.publishableKey=YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY
+familyvault.auth.redirectUri=com.familyvault.app://auth-callback

@@ -28,6 +28,18 @@ Use `.env.example` to document required variables. Put real values in local file
 
 The Supabase anon key can be used in clients when Row Level Security is correct. The Supabase service role key is server-only and must never be included in Android or web builds.
 
+## Android Local Config
+
+Android client config should live in ignored `apps/android/local.properties`:
+
+```properties
+familyvault.supabase.url=https://YOUR_PROJECT_REF.supabase.co
+familyvault.supabase.publishableKey=YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY
+familyvault.auth.redirectUri=com.familyvault.app://auth-callback
+```
+
+Commit `apps/android/local.properties.example`, but never commit the real `local.properties` file. The Supabase publishable/anon key is allowed in clients when RLS is correct, but service role keys and Google OAuth client secrets are server/dashboard-only.
+
 ## Before Pushing
 
 Run:

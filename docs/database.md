@@ -71,6 +71,8 @@ Likely fields:
 
 Supabase Auth stores users. A profile table can store app-specific user details.
 
+One FamilyVault profile should map to one Supabase `auth.users.id`. Google and email are auth identities/providers for that Supabase user, not separate profile rows.
+
 Likely fields:
 
 - id.
@@ -85,6 +87,10 @@ Likely fields:
 
 Do not store the linked person subject on `profiles`. The link between an app user and a person subject belongs on `vault_members.person_subject_id`, because that relationship is vault-specific.
 
+When the same verified email address is used through Google and email sign-in, the intended product behavior is that the user reaches the same profile. Test this early against the real Supabase project so duplicate auth users are caught before vault/member logic depends on it.
+
+
+Android currently reads `public.profiles` for FamilyVault profile fields and reads Supabase Auth session metadata separately for account details. Keep vault-specific links, such as a user's person subject in a vault, on `vault_members.person_subject_id`, not on `profiles`.
 ## subjects
 
 Things that documents are about. Subjects are separate from users.

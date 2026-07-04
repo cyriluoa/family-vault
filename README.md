@@ -20,13 +20,26 @@ supabase/
 packages/
   shared/        Shared types, constants, and validation helpers.
 docs/
+  android-navigation.md
   architecture.md
   database.md
+  design-system.md
   development-plan.md
   git-and-secrets.md
   product-notes.md
 ```
 
+## Current Android Status
+
+The Android app is a Jetpack Compose app with Hilt, Navigation Compose, Supabase Auth/PostgREST/Storage clients, and a lightweight design system. Current implemented flow:
+
+- Google sign-in through Supabase Auth using Android custom tabs and `com.familyvault.app://auth-callback`.
+- Supabase session observation for signed-in/signed-out app routing.
+- Signed-in app shell with overflow menu actions for Profile and Sign out.
+- Profile screen that combines `public.profiles` data with Supabase Auth account metadata.
+- Local Android config through ignored `apps/android/local.properties`, documented by `apps/android/local.properties.example`.
+
+The app currently routes signed-in users to onboarding. Vault membership lookup and vault-aware routing are the next product step.
 ## MVP Features
 
 - Family spaces/vaults for shared household or family groups.

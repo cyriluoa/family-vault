@@ -14,6 +14,8 @@ FamilyVault is a private family document management app. The goal is to replace 
 - Subjects can be people, properties, vehicles, trips, organizations, or family-wide entities.
 - Every vault should start with a default Family subject. Family-wide documents should attach to that subject.
 - Users are app accounts. Subjects are what documents are about.
+- Google sign-in and email sign-in should be treated as ways to access the same FamilyVault account when they use the same verified email address.
+- User-facing auth copy should say Continue with Google and Continue with email, not imply that these always create separate accounts.
 - A user's membership in a vault may link to a person subject in that vault.
 - A document has a category, type, status, primary subject, related subjects, tags, metadata, and versions.
 - A saved document must have a primary subject. During an upload draft or import flow, the primary subject can be temporarily missing until metadata is completed.
@@ -47,6 +49,9 @@ FamilyVault is a private family document management app. The goal is to replace 
 - Activity log.
 - Open files externally.
 - Strong backend auth and permissions.
+- Google sign-in.
+- Email sign-in via OTP or magic link.
+- Same-profile behavior when the same verified email is used across Google and email sign-in.
 
 ## Nice-to-Haves
 

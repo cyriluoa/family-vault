@@ -40,6 +40,29 @@ The first end-to-end slice should support:
 - Show the document in a list.
 - Open the current version in an external Android app.
 
+## Current Progress
+
+Completed foundation work:
+
+- Supabase migrations for core tables, documents, storage policies, and RLS have been pushed.
+- Android Compose project is scaffolded in the monorepo.
+- Supabase Android client is configured through Hilt and local BuildConfig values.
+- Google sign-in works through Supabase OAuth and Android deep-link callback handling.
+- App-level session observation routes signed-out users to Auth and signed-in users to Onboarding.
+- Signed-in shell includes Profile and Sign out actions.
+- Profile screen reads from `public.profiles` and displays Supabase Auth account metadata.
+
+Next recommended work:
+
+1. Implement vault onboarding: create vault, auto-create Family subject, create owner membership.
+2. Query active vault membership after sign-in and route to Documents when membership exists.
+3. Implement invite-code acceptance and member/person-subject linking.
+4. Start Android share-sheet import flow.
+
 ## Keep The MVP Small
 
 Do not build custom document type management, OCR, AI classification, semantic search, public links, complex multi-vault switching, or per-document private permissions in the first pass. Keep the schema flexible enough for those features, but make the first version boring, reliable, and trusted.
+
+## Post-MVP Hardening
+
+Before a wider production release, move Android auth callbacks from only a custom URL scheme to verified Android App Links using an HTTPS domain owned by FamilyVault. This reduces callback spoofing risk and is safer than relying only on `com.familyvault.app://auth-callback`.
