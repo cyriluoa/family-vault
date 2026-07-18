@@ -11,6 +11,14 @@ sealed interface AppRoute {
         override val route = "onboarding"
     }
 
+    data object CreateVault : AppRoute {
+        override val route = "create_vault"
+    }
+
+    data object Vaults : AppRoute {
+        override val route = "vaults"
+    }
+
     data object Documents : AppRoute {
         override val route = "documents"
     }

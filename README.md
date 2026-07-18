@@ -34,12 +34,18 @@ docs/
 The Android app is a Jetpack Compose app with Hilt, Navigation Compose, Supabase Auth/PostgREST/Storage clients, and a lightweight design system. Current implemented flow:
 
 - Google sign-in through Supabase Auth using Android custom tabs and `com.familyvault.app://auth-callback`.
-- Supabase session observation for signed-in/signed-out app routing.
-- Signed-in app shell with overflow menu actions for Profile and Sign out.
+- Email sign-in links through Supabase Auth, with Google recommended during development because the built-in email sender is rate-limited.
+- Supabase session observation for signed-in/signed-out routing plus vault-aware signed-in startup.
+- Signed-in app shell with a profile avatar and overflow sign-out menu.
+- No-vault onboarding with Create your first vault and Join a vault actions.
+- Create Vault form wired to the `public.create_vault` Supabase RPC.
+- Vaults screen wired to the `public.my_vaults` Supabase RPC.
 - Profile screen that combines `public.profiles` data with Supabase Auth account metadata.
+- Shared scaffold header pattern for modern screen titles without a persistent top bar.
 - Local Android config through ignored `apps/android/local.properties`, documented by `apps/android/local.properties.example`.
 
-The app currently routes signed-in users to onboarding. Vault membership lookup and vault-aware routing are the next product step.
+The app now checks active vault memberships after sign-in. Users with no vaults see onboarding, while users with active vault memberships start on the Vaults screen. Creating a vault routes to Vaults after the RPC succeeds.
+
 ## MVP Features
 
 - Family spaces/vaults for shared household or family groups.

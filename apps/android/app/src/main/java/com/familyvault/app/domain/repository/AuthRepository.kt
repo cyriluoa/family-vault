@@ -8,5 +8,6 @@ interface AuthRepository {
     fun observeSessionState(): Flow<AppSessionState>
     fun observeAccountInfo(): Flow<AccountInfo?>
     suspend fun signInWithGoogle()
+    suspend fun sendEmailSignInLink(email: String)
     suspend fun signOut()
 }

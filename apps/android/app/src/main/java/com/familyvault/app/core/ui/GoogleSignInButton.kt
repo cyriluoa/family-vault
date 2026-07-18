@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,7 +37,8 @@ fun GoogleSignInButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
-    text: String = "Continue with Google"
+    text: String = "Continue with Google",
+    showRecommendedBadge: Boolean = false
 ) {
     val darkTheme = isSystemInDarkTheme()
     val shape = RoundedCornerShape(8.dp)
@@ -68,7 +71,6 @@ fun GoogleSignInButton(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // White pill behind the G to match Google branding spec
                 Box(
                     modifier = Modifier
                         .size(18.dp)
@@ -93,6 +95,22 @@ fun GoogleSignInButton(
                         fontWeight = FontWeight.Medium
                     )
                 )
+
+                if (showRecommendedBadge) {
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Surface(
+                        shape = RoundedCornerShape(999.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ) {
+                        Text(
+                            text = "Recommended",
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
             }
         }
     }

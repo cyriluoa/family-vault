@@ -48,16 +48,19 @@ Completed foundation work:
 - Android Compose project is scaffolded in the monorepo.
 - Supabase Android client is configured through Hilt and local BuildConfig values.
 - Google sign-in works through Supabase OAuth and Android deep-link callback handling.
-- App-level session observation routes signed-out users to Auth and signed-in users to Onboarding.
-- Signed-in shell includes Profile and Sign out actions.
+- App-level session observation routes signed-out users to Auth and uses `public.my_vaults` to choose Onboarding or Vaults for signed-in users.
+- Signed-in shell includes a profile avatar and overflow sign-out action.
 - Profile screen reads from `public.profiles` and displays Supabase Auth account metadata.
+- No-vault onboarding has Create your first vault and Join a vault actions.
+- Create Vault form calls the `public.create_vault` RPC, which creates the vault structure atomically.
+- Vaults screen calls the `public.my_vaults` RPC to show the current user's active vault memberships in a compact list with a bottom-right add action.
+- Shared scaffold header pattern is in place for screen title/subtitle areas without reintroducing a persistent top app bar.
 
 Next recommended work:
 
-1. Implement vault onboarding: create vault, auto-create Family subject, create owner membership.
-2. Query active vault membership after sign-in and route to Documents when membership exists.
-3. Implement invite-code acceptance and member/person-subject linking.
-4. Start Android share-sheet import flow.
+1. Smoke test create-vault, vault-list, post-login routing, and scaffold header layout on a device.
+2. Implement invite-code acceptance and member/person-subject linking.
+3. Start Android share-sheet import flow.
 
 ## Keep The MVP Small
 

@@ -53,7 +53,7 @@ Avoid oversized in-app headings. The app is a tool, not a landing page.
 
 Android and web should share these component concepts:
 
-- App scaffold with safe-area-aware screen padding.
+- App scaffold with safe-area-aware screen padding and an optional screen header slot.
 - Empty state.
 - Loading state.
 - Error state.
@@ -63,8 +63,20 @@ Android and web should share these component concepts:
 - Status chip.
 - Expiry/warning chip.
 
-Avoid a persistent top app bar by default. Use inline screen headers, bottom navigation, contextual actions, or focused task headers only where they help the workflow.
+Avoid a persistent top app bar by default. Use the shared scaffold header slot for screen title/subtitle content, bottom navigation when needed, and contextual actions for focused workflows. Keep profile and overflow actions separate from the screen header so each screen can own its own top context without feeling like an old-style toolbar.
 
+
+## Screen Headers
+
+Screens that use `FamilyVaultScaffold` can provide a `header` slot. Use this for the screen title, short subtitle, and later small contextual controls. This prevents awkward empty top spacing while keeping the app free of a persistent top bar.
+
+Header guidance:
+
+- Use concise titles such as `Your vaults`, `Create your vault`, or `Documents`.
+- Keep subtitles practical and short.
+- Leave right-side space for the app-level profile avatar and overflow controls.
+- Do not repeat the same title again inside the body content.
+- Auth and onboarding may stay centered/full-screen when that better fits the workflow.
 ## Document List
 
 Document rows should show:

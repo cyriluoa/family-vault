@@ -15,6 +15,8 @@ Routes are modeled in `AppRoute.kt` as a sealed interface. This keeps route name
 ```text
 Auth
 Onboarding
+CreateVault
+Vaults
 Documents
 ImportFile
 Profile
@@ -27,21 +29,24 @@ flowchart TD
   Start["App launch"] --> Session{"Supabase session?"}
   Session -->|Checking| Loading["Loading"]
   Session -->|No session| Auth["Auth"]
-  Session -->|Signed in| Shell["Signed-in shell"]
-  Shell --> Onboarding["Onboarding"]
-  Shell --> Profile["Profile"]
-  Shell --> SignOut["Sign out"]
+  Session -->|Signed in| VaultLookup{"Active vaults?"}
+  VaultLookup -->|No| OnboardingShell["Signed-in shell: Onboarding"]
+  VaultLookup -->|Yes| VaultsShell["Signed-in shell: Vaults"]
+  OnboardingShell --> Onboarding["Onboarding"]
+  VaultsShell --> Vaults["Vaults"]
+  OnboardingShell --> Profile["Profile"]
+  VaultsShell --> Profile
+  OnboardingShell --> SignOut["Sign out"]
+  VaultsShell --> SignOut
   SignOut --> Auth
-  Onboarding --> Documents["Documents"]
+  Onboarding --> CreateVault["Create Vault"]
+  CreateVault -->|RPC success| Vaults
+  Vaults --> Documents["Documents"]
+  Vaults --> CreateVault
   Documents --> ImportFile["Import File"]
   ImportFile --> Documents
 ```
 
-`FamilyVaultApp` owns app-level session routing. `SignedInAppShell` owns the signed-in `NavHostController` so the overflow menu can navigate to Profile.
+`FamilyVaultApp` owns app-level session routing. `AppViewModel` resolves the signed-in start destination by calling the `public.my_vaults` RPC. `SignedInAppShell` owns the signed-in `NavHostController`; the profile avatar navigates to Profile and the overflow menu handles secondary actions such as sign out.
 
-Current limitation: signed-in users start at Onboarding because vault membership lookup is not implemented yet. Later routing should become:
-
-```text
-Signed in + active vault membership -> Documents
-Signed in + no active vault membership -> Onboarding
-```
+If the user has no active vault memberships, the signed-in shell starts at Onboarding. If active memberships exist, it starts at Vaults. Create Vault can create the first vault through the `public.create_vault` RPC and then routes to Vaults. Vaults loads the current user's active vault memberships through the `public.my_vaults` RPC. The populated list uses a bottom-right add action that opens Create Vault or Join with invite code options.

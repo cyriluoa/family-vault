@@ -16,7 +16,7 @@ Likely fields:
 - created_at.
 - updated_at.
 
-When a vault is created, it should also get a default Family subject for family-wide documents.
+When a vault is created, it should also get a default Family subject for family-wide documents. The Android create-vault flow uses the `public.create_vault(vault_name text, creator_person_name text)` RPC so vault creation is atomic and server-side. The Android vault list uses the `public.my_vaults()` RPC to return active vault memberships in a client-friendly summary shape.
 
 ## vault_members
 
@@ -90,7 +90,7 @@ Do not store the linked person subject on `profiles`. The link between an app us
 When the same verified email address is used through Google and email sign-in, the intended product behavior is that the user reaches the same profile. Test this early against the real Supabase project so duplicate auth users are caught before vault/member logic depends on it.
 
 
-Android currently reads `public.profiles` for FamilyVault profile fields and reads Supabase Auth session metadata separately for account details. Keep vault-specific links, such as a user's person subject in a vault, on `vault_members.person_subject_id`, not on `profiles`.
+Android currently reads `public.profiles` for FamilyVault profile fields and reads Supabase Auth session metadata separately for account details. The signed-in app shell uses auth metadata for the profile avatar/name fallback. Keep vault-specific links, such as a user's person subject in a vault, on `vault_members.person_subject_id`, not on `profiles`.
 ## subjects
 
 Things that documents are about. Subjects are separate from users.
@@ -115,7 +115,7 @@ Likely fields:
 - created_at.
 - updated_at.
 
-Every vault should include one default family subject. A saved document should always point to a primary subject, and family-wide documents should use the Family subject.
+Every vault should include one default family subject. The `create_vault` RPC creates this subject automatically as `Family`. A saved document should always point to a primary subject, and family-wide documents should use the Family subject.
 
 For the MVP, subject metadata should be filled by controlled app forms based on subject kind, not by exposing arbitrary key/value editing to users.
 

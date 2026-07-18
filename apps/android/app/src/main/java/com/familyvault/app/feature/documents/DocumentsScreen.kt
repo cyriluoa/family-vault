@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.familyvault.app.core.ui.EmptyState
 import com.familyvault.app.core.ui.FamilyVaultScaffold
+import com.familyvault.app.core.ui.FamilyVaultScreenHeader
 import com.familyvault.app.ui.theme.FamilyVaultTheme
 
 @Composable

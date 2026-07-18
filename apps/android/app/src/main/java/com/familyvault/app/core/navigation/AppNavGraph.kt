@@ -9,19 +9,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.familyvault.app.domain.model.AccountInfo
 import com.familyvault.app.feature.auth.AuthScreen
 import com.familyvault.app.feature.auth.AuthViewModel
 import com.familyvault.app.feature.documents.DocumentsScreen
 import com.familyvault.app.feature.importfile.ImportFileScreen
 import com.familyvault.app.feature.onboarding.OnboardingScreen
 import com.familyvault.app.feature.profile.ProfileRoute
+import com.familyvault.app.feature.vault.CreateVaultRoute
+import com.familyvault.app.feature.vault.VaultsRoute
 import com.familyvault.app.ui.theme.FamilyVaultTheme
 
 @Composable
 fun AppNavGraph(
     modifier: Modifier = Modifier,
     startDestination: AppRoute = AppRoute.Auth,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    accountInfo: AccountInfo? = null
 ) {
 
     NavHost(
@@ -36,13 +40,53 @@ fun AppNavGraph(
             AuthScreen(
                 isLoading = authUiState.value.isLoading,
                 errorMessage = authUiState.value.errorMessage,
+                infoMessage = authUiState.value.infoMessage,
+                emailAuthStep = authUiState.value.emailAuthStep,
+                email = authUiState.value.email,
                 onGoogleSignInClick = authViewModel::onGoogleSignInClick,
-                onEmailSignInClick = authViewModel::onEmailSignInClick
+                onEmailSignInClick = authViewModel::onEmailSignInClick,
+                onEmailChanged = authViewModel::onEmailChanged,
+                onSendEmailLinkClick = authViewModel::onSendEmailLinkClick,
+                onBackToAuthOptionsClick = authViewModel::onBackToAuthOptionsClick
             )
         }
 
         composable(AppRoute.Onboarding.route) {
-            OnboardingScreen()
+            OnboardingScreen(
+                onCreateVaultClick = {
+                    navController.navigate(AppRoute.CreateVault.route)
+                }
+            )
+        }
+
+        composable(AppRoute.CreateVault.route) {
+            CreateVaultRoute(
+                initialPersonName = accountInfo.defaultPersonName(),
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onCreated = {
+                    navController.navigate(AppRoute.Vaults.route) {
+                        popUpTo(AppRoute.Onboarding.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
+        composable(AppRoute.Vaults.route) {
+            VaultsRoute(
+                onVaultClick = {
+                    navController.navigate(AppRoute.Documents.route)
+                },
+                onCreateVaultClick = {
+                    navController.navigate(AppRoute.CreateVault.route)
+                },
+                onJoinVaultClick = {
+                    // Later: navigate to join-vault flow.
+                }
+            )
         }
 
         composable(AppRoute.Documents.route) {
@@ -64,4 +108,22 @@ private fun AppNavGraphPreview() {
     FamilyVaultTheme {
         AppNavGraph()
     }
+}
+private fun AccountInfo?.defaultPersonName(): String {
+    val displayName = this?.displayName?.trim().orEmpty()
+    if (displayName.isNotBlank()) return displayName
+
+    val emailPrefix = this?.email
+        ?.substringBefore('@')
+        ?.replace('.', ' ')
+        ?.replace('_', ' ')
+        ?.trim()
+        .orEmpty()
+
+    return emailPrefix
+        .split(' ')
+        .filter { it.isNotBlank() }
+        .joinToString(" ") { part ->
+            part.replaceFirstChar { char -> char.uppercase() }
+        }
 }

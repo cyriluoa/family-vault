@@ -5,6 +5,8 @@ data class AccountInfo(
     val email: String?,
     val phone: String?,
     val providers: List<String>,
+    val displayName: String?,
+    val avatarUrl: String?,
     val lastSignInAt: String?,
     val emailConfirmedAt: String?,
     val createdAt: String?

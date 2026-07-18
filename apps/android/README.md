@@ -9,21 +9,30 @@ Implemented so far:
 - Compose app shell and route graph.
 - FamilyVault theme tokens for a calm, secure, document-focused UI.
 - Google sign-in through Supabase Auth.
+- Email sign-in links through Supabase Auth. Google is recommended during development because Supabase's built-in email sender is rate-limited.
 - Android deep-link callback handling for `com.familyvault.app://auth-callback`.
 - Session observation so login/logout changes route the app automatically.
-- Signed-in overflow menu with Profile and Sign out.
+- Signed-in shell with profile avatar access and an overflow menu for sign out.
+- No-vault onboarding with Create your first vault and Join a vault actions.
+- Create Vault form wired to the `public.create_vault` Supabase RPC.
+- Vaults screen wired to the `public.my_vaults` Supabase RPC, using a compact vault list and bottom-right add action.
+- Shared scaffold header support for screen title/subtitle areas without a persistent top app bar.
 - Profile screen that reads the app profile from `public.profiles` and account metadata from Supabase Auth.
 
 Expected current routing:
 
 ```text
 No session -> Auth
-Signed in -> Onboarding
-Profile menu item -> Profile
+Signed in + no active vault memberships -> Onboarding
+Signed in + active vault memberships -> Vaults
+Create your first vault -> Create Vault
+Create vault success -> Vaults
+Vault selection -> Documents
+Profile avatar -> Profile
 Sign out -> Auth
 ```
 
-Vault membership lookup is not wired yet, so signed-in users always start at onboarding for now.
+Signed-in startup calls the `public.my_vaults` RPC to decide whether to show onboarding or the Vaults screen. Creating a vault uses one RPC so the vault, default Family subject, creator person subject, owner membership, default vault preference, and activity log are created together. The Vaults screen uses the same vault-list RPC to show active vault memberships.
 
 ## Local Config
 

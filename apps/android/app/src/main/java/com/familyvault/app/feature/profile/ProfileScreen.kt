@@ -33,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.familyvault.app.core.ui.FamilyVaultScaffold
+import com.familyvault.app.core.ui.FamilyVaultScreenHeader
 import com.familyvault.app.domain.model.AccountInfo
 import com.familyvault.app.domain.model.AppProfile
 import com.familyvault.app.ui.theme.FamilyVaultTheme
@@ -59,7 +60,10 @@ fun ProfileScreen(
     uiState: ProfileUiState,
     modifier: Modifier = Modifier
 ) {
-    FamilyVaultScaffold(modifier = modifier) { paddingValues ->
+    FamilyVaultScaffold(
+        modifier = modifier,
+        header = { FamilyVaultScreenHeader(title = "Profile") }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,15 +71,6 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Text(
-                text = "Profile",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(modifier = Modifier.height(18.dp))
 
             ProfileHeader(
                 appProfile = uiState.appProfile,
@@ -316,6 +311,8 @@ private fun ProfileScreenPreview() {
                     email = "cyril@example.com",
                     phone = null,
                     providers = listOf("google"),
+                    displayName = "Cyril Joseph",
+                    avatarUrl = null,
                     createdAt = "2026-06-24T00:00:00Z",
                     lastSignInAt = "2026-06-24T00:10:00Z",
                     emailConfirmedAt = "2026-06-24T00:00:00Z"

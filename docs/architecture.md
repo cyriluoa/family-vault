@@ -32,7 +32,7 @@ When a user signs in with Google for the first time, Supabase creates an `auth.u
 
 If a user signs in with Google using an email address and later uses Continue with email for that same verified email address, the intended behavior is that they land in the same FamilyVault profile. This should be tested early with the real Supabase project to confirm provider linking behaves as expected.
 
-For Android MVP, start with Supabase OAuth plus Android deep links. The Continue with Google button should launch the Google OAuth flow through Supabase, return to the app, and store a Supabase session. Continue with email can use email OTP or magic links, and should end in the same post-login flow.
+For Android MVP, start with Supabase OAuth plus Android deep links. The Continue with Google button should launch the Google OAuth flow through Supabase, return to the app, and store a Supabase session. Continue with email currently uses Supabase email sign-in links. The default Supabase email sender is rate-limited, so Google is the recommended development sign-in path until custom SMTP is configured.
 
 The MVP Android redirect can use a custom scheme such as `com.familyvault.app://auth-callback` for speed of development. Before wider production release, replace or supplement this with verified Android App Links using an HTTPS domain owned by FamilyVault, such as `https://auth.familyvault.app/callback`, so Android can verify the app owns the callback domain.
 
@@ -50,13 +50,15 @@ Current Android auth flow:
 6. Supabase imports the session and updates `sessionStatus`.
 7. `AppViewModel` observes `sessionStatus` and maps it to app routing state.
 
-The signed-in app shell currently routes users to onboarding until vault membership lookup is implemented. Profile data is split into two concepts:
+The signed-in app shell checks vault membership before choosing its start route. The shell shows a profile avatar for profile access and keeps an overflow menu for secondary actions. Profile data is split into two concepts:
 
 - `public.profiles`: FamilyVault app profile fields such as display name, email, avatar URL, and default vault preference.
 - Supabase Auth account metadata: auth user id, providers, phone, account creation, last sign-in, and email confirmation.
+Create-vault is handled through the public.create_vault Postgres RPC. Android sends only the vault name and creator person name; the RPC uses `auth.uid()` from the verified Supabase session to create the vault, default Family subject, creator person subject, owner membership, default vault preference, and activity log in one transaction.
+
 Post-login routing:
 
-- If the user has active vault membership, open the default vault.
+- If the user has active vault membership, start on the Vaults screen for now. Later this can open the default vault directly.
 - If the user has no vault yet, show onboarding to create or join a vault.
 - If the user came from an invite link or code, accept the invite, create/link their person subject in that vault, and then enter the vault.
 
